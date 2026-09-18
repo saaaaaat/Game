@@ -44,7 +44,7 @@ namespace ArkanoidGame
 		ball.Update(timeDelta);
 
 		bool hit = platform.CheckCollisionWithBall(ball);
-		if (hit)
+		if (hit && ball.GetDirection().y>0)
 		{
 			ball.ReboundFromPlatform();
 		}

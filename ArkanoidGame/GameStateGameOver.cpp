@@ -27,15 +27,15 @@ namespace ArkanoidGame
 		gameOverText.setString("GAME OVER");
 
 		// собираем  вектор ,сортируем
-		std::vector<std::pair<int, std::string>> sorted;
-		Game& game = Application::Instance().GetGame();
-		for (const auto& item : game.GetRecordsTable())
-		{
-			sorted.push_back({ item.second, item.first });
-		}
+		//std::vector<std::pair<int, std::string>> sorted;
+		//Game& game = Application::Instance().GetGame();
+		//for (const auto& item : game.GetRecordsTable())
+		//{
+			//sorted.push_back({ item.second, item.first });
+		//}
 
-		std::sort(sorted.begin(), sorted.end(),
-			[](const auto& a, const auto& b) { return a.first > b.first; });
+		//std::sort(sorted.begin(), sorted.end(),
+			/*[](const auto& a, const auto& b) { return a.first > b.first; });
 
 		bool playerFound = false;
 		for (int i = 0; i < MAX_RECORDS_TABLE_SIZE && i < (int)sorted.size(); ++i)
@@ -68,7 +68,7 @@ namespace ArkanoidGame
 			ss << MAX_RECORDS_TABLE_SIZE << ". " << PLAYER_NAME << ": " << score;
 			last.setString(ss.str());
 			last.setFillColor(sf::Color::Green);
-		}
+		}*/
 
 		hintText.setFont(font);
 		hintText.setCharacterSize(24);
@@ -108,14 +108,14 @@ namespace ArkanoidGame
 		gameOverText.setPosition(viewSize.x / 2.f, viewSize.y / 2 - 50.f);
 		window.draw(gameOverText);
 
-		std::vector<sf::Text*> textsList;
+		/*std::vector<sf::Text*> textsList;
 		for (auto& text : recordsTableTexts)
 		{
 			textsList.push_back(&text);
 		}
 
 		sf::Vector2f tablePos = { viewSize.x / 2, viewSize.y / 2.f };
-		DrawTextArray(window, textsList, 10.f, Orientation::Vertical, Alignment::Min, tablePos, { 0.5f, 0.f });
+		DrawTextArray(window, textsList, 10.f, Orientation::Vertical, Alignment::Min, tablePos, { 0.5f, 0.f });*/
 
 		hintText.setOrigin(CalculateTextOrigin(hintText, { 0.5f, 1.f }));
 		hintText.setPosition(viewSize.x / 2.f, viewSize.y - 50.f);

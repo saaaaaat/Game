@@ -12,14 +12,14 @@ namespace ArkanoidGame
 	Game::Game()
 	{
 		//иниц. таблици рекордов в конструкторе 
-		recordsTable =
-		{
-			{"John", MAX_APPLES / 2},
-			{"Jane", MAX_APPLES / 3},
-			{"Alice", MAX_APPLES / 4},
-			{"Bob", MAX_APPLES / 5},
-			{"Clementine", MAX_APPLES / 5},
-		};
+		//recordsTable =
+		//{
+			//{"John", MAX_APPLES / 2},
+			//{"Jane", MAX_APPLES / 3},
+			//{"Alice", MAX_APPLES / 4},
+			//{"Bob", MAX_APPLES / 5},
+			//{"Clementine", MAX_APPLES / 5},
+		//};
 		//иниц.состояния
 
 		stateChangeType = GameStateChangeType::None;
@@ -43,12 +43,7 @@ namespace ArkanoidGame
 				window.close();
 			}
 
-			// закрываем игру
-			if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
-			{
-				window.close();
-				return;
-			}
+			
 
 			if (!stateStack.empty())
 			{
@@ -154,14 +149,14 @@ namespace ArkanoidGame
 		}
 	}
 
-	int Game::GetRecordByPlayerId(const std::string& playerId) const
-	{
-		auto it = recordsTable.find(playerId);
-		return it == recordsTable.end() ? 0 : it->second;
-	}
+	//int Game::GetRecordByPlayerId(const std::string& playerId) const
+	//{
+		//auto it = recordsTable.find(playerId);
+		//return it == recordsTable.end() ? 0 : it->second;
+	//}
 
-	void Game::UpdateRecord(const std::string& playerId, int score)
-	{
-		recordsTable[playerId] = std::max(recordsTable[playerId], score);
-	}
+	//void Game::UpdateRecord(const std::string& playerId, int score)
+	//{
+		//recordsTable[playerId] = std::max(recordsTable[playerId], score);
+	//}
 }

@@ -43,6 +43,32 @@ namespace ArkanoidGame
 
 	GameState::~GameState()
 	{
+		DestroyData();
+	}
+
+	//защита от самоприсваивания
+	GameState& GameState::operator=(GameState&& state) noexcept
+	{
+		
+		if (this == &state)
+		{
+			return *this;
+		}
+
+		// удаляем старые данные перед новыми
+		DestroyData();
+
+		
+		type = state.type;
+		data = state.data;
+		isExclusivelyVisible = state.isExclusivelyVisible;
+		state.data = nullptr;
+		return *this;
+	}
+
+	
+	void GameState::DestroyData()
+	{
 		if (data)
 		{
 			switch (type)
@@ -63,7 +89,6 @@ namespace ArkanoidGame
 				delete ((GameStateRecordsData*)data);
 				break;
 			default:
-				assert(false);
 				break;
 			}
 			data = nullptr;

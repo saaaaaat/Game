@@ -26,16 +26,8 @@ namespace ArkanoidGame
 
 		GameState& operator=(const GameState& state) = delete;
 		// опретар перемещения с иницилизацией полей
-		GameState& operator=(GameState&& state) noexcept
-		{
-			type = state.type;
-			data = state.data;
-			isExclusivelyVisible = state.isExclusivelyVisible;
-			state.data = nullptr;
-			return *this;
-		}
-
-		GameStateType GetType() const { return type; }
+		GameState& operator=(GameState&& state) noexcept;
+	    GameStateType GetType() const { return type; }
 		bool IsExclusivelyVisible() const { return isExclusivelyVisible; }
 
 		void Update(float timeDelta);
@@ -43,6 +35,8 @@ namespace ArkanoidGame
 		void HandleWindowEvent(const sf::Event& event);
 
 	private:
+		void DestroyData();
+
 		//иниц. полей при обьявление
 		GameStateType type = GameStateType::None;
 		void* data = nullptr;

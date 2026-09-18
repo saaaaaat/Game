@@ -3,7 +3,7 @@
 #include "Sprite.h"
 #include "GameSettings.h"
 #include "GameState.h"
-#include <unordered_map>
+//#include <unordered_map>
 
 namespace ArkanoidGame
 {
@@ -26,7 +26,7 @@ namespace ArkanoidGame
 	class Game
 	{
 	public:
-		using RecordsTable = std::unordered_map<std::string, int>;
+		//using RecordsTable = std::unordered_map<std::string, int>;
 
 		Game();
 		~Game();
@@ -39,9 +39,9 @@ namespace ArkanoidGame
 		bool IsEnableOptions(GameOptions option) const;
 		void SetOption(GameOptions option, bool value);
 
-		const RecordsTable& GetRecordsTable() const { return recordsTable; }
-		int GetRecordByPlayerId(const std::string& playerId) const;
-		void UpdateRecord(const std::string& playerId, int score);
+		//const RecordsTable& GetRecordsTable() const { return recordsTable; }
+		//int GetRecordByPlayerId(const std::string& playerId) const;
+		//void UpdateRecord(const std::string& playerId, int score);
 
 		void PushState(GameStateType stateType, bool isExclusivelyVisible);
 		void PopState();
@@ -55,6 +55,6 @@ namespace ArkanoidGame
 		bool pendingGameStateIsExclusivelyVisible = false;
 
 		GameOptions options = GameOptions::Default;
-		RecordsTable recordsTable;
+		//RecordsTable recordsTable;
 	};
 }
