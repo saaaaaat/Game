@@ -7,7 +7,7 @@ namespace ArkanoidGame
 {
 	class Game;
 
-	class GameStateMainMenuData : public GameStateData
+	class GameStateWinData : public GameStateData
 	{
 	public:
 		void Init() override;
@@ -17,6 +17,9 @@ namespace ArkanoidGame
 
 	private:
 		sf::Font font;
+		sf::RectangleShape background;
+		sf::Text winText;
+		sf::Text hintText;
 		Menu menu;
 	};
 }

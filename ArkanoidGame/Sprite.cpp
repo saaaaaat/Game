@@ -39,6 +39,11 @@ namespace ArkanoidGame
 		sprite.setOrigin(0.5f * bounds.width, 0.5f * bounds.height);
 	}
 
+	void SetSpriteColor(sf::Sprite& sprite, const sf::Color& color)
+	{
+		sprite.setColor(color);
+	}
+
 	void PlaceSpriteRandomly(sf::Sprite& sprite, const sf::FloatRect& area, const std::list<sf::Sprite>& obstacles)
 	{
 		bool hasCollision = true;

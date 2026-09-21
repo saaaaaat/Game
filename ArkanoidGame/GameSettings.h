@@ -18,14 +18,18 @@ namespace ArkanoidGame
 	const unsigned int BALL_SIZE = 20;
 	const unsigned int BALL_SPEED = 400;
 
+	//блок
+	const unsigned int BLOCK_WIDTH = 70;
+	const unsigned int BLOCK_HEIGHT = 25;
+
 	// платформа
-	const unsigned int PLATFORM_WIDTH = 60;
+	const unsigned int PLATFORM_WIDTH = 160;
 	const unsigned int PLATFORM_HEIGHT = 20;
 	const float PLATFORM_SPEED = 300.f;
 
 	// остальное
 	const float ACCELERATION = 10.f;
-	const int MAX_APPLES = 80;
+	
 	const int MAX_RECORDS_TABLE_SIZE = 5;
 
 	extern const char* PLAYER_NAME;

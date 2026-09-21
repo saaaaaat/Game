@@ -5,11 +5,13 @@
 
 namespace ArkanoidGame
 {
-	void SetupSprite(sf::Sprite& sprite, float width, float height, const sf::Texture& texture);
-	void ResizeSprite(sf::Sprite& sprite, float width, float height);
+	void SetupSprite(sf::Sprite& sprite, float desiredWidth, float desiredHeight, const sf::Texture& texture);
+	void ResizeSprite(sf::Sprite& sprite, float desiredWidth, float desiredHeight);
 	void CenterSpriteOrigin(sf::Sprite& sprite);
 
-	void PlaceSpriteRandomly(sf::Sprite& sprite, const sf::FloatRect& area, const std::list<sf::Sprite>& obstacles);
+	void SetSpriteColor(sf::Sprite& sprite, const sf::Color& color);
+
+	void PlaceSpriteRandomly(sf::Sprite& sprite, const sf::FloatRect& rect, const std::list<sf::Sprite>& collection);
 	sf::Vector2f GetRandomPositionInRect(const sf::Sprite& sprite, const sf::FloatRect& rect);
 
 	void RenderSprite(const sf::Sprite& sprite, sf::RenderWindow& window);

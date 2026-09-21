@@ -1,5 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <memory>
+#include "GameStateData.h"
 
 namespace ArkanoidGame
 {
@@ -11,6 +13,7 @@ namespace ArkanoidGame
 		GameOver,
 		ExitDialog,
 		Records,
+		Win,
 	};
 
 	class GameState
@@ -39,7 +42,7 @@ namespace ArkanoidGame
 
 		//иниц. полей при обьявление
 		GameStateType type = GameStateType::None;
-		void* data = nullptr;
+		std::unique_ptr<GameStateData> data = nullptr;
 		bool isExclusivelyVisible = false;
 	};
 }

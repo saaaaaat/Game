@@ -30,11 +30,6 @@ namespace ArkanoidGame
 		}
 	}
 
-	void Platform::Draw(sf::RenderWindow& window)
-	{
-		RenderSprite(sprite, window);
-	}
-
 	void Platform::Move(float step)
 	{
 		sf::Vector2f position = sprite.getPosition();
@@ -48,14 +43,13 @@ namespace ArkanoidGame
 
 		sprite.setPosition(position);
 	}
-
-	bool Platform::CheckCollisionWithBall(const Ball& ball)
+	bool Platform::CheckCollisionWithBall(const Ball& ball) const
 	{
-		sf::FloatRect rect = sprite.getGlobalBounds();
-		sf::Vector2f ballPos = ball.GetPosition();
-		float halfBall = BALL_SIZE / 2.f;
+		const sf::FloatRect& rect = sprite.getGlobalBounds();
+		const sf::Vector2f& ballPos = ball.GetPosition();
+		const float halfBall = BALL_SIZE / 2.f;
 
-		// шарик слева
+		// шар слева
 		if (ballPos.x < rect.left)
 		{
 			float dx = ballPos.x - rect.left;
@@ -63,7 +57,7 @@ namespace ArkanoidGame
 			return (dx * dx + dy * dy) < halfBall * halfBall;
 		}
 
-		// шарик справа
+		// шар справа
 		if (ballPos.x > rect.left + rect.width)
 		{
 			float dx = ballPos.x - (rect.left + rect.width);
@@ -71,7 +65,7 @@ namespace ArkanoidGame
 			return (dx * dx + dy * dy) < halfBall * halfBall;
 		}
 
-		// шарик над
+		// над или под платформой
 		return std::fabs(ballPos.y - rect.top) <= halfBall;
 	}
 }

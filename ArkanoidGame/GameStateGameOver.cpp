@@ -6,6 +6,7 @@
 #include <sstream>
 #include <algorithm>
 
+
 namespace ArkanoidGame
 {
 	const char* PLAYER_NAME = "Player";
