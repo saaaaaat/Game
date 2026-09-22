@@ -116,6 +116,8 @@ namespace ArkanoidGame
 				}
 
 				block->Destroy();
+
+				break;
 			}
 		}
 
