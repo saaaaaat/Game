@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 
+
 namespace ArkanoidGame
 {
 	// путь к ресурсам
@@ -18,9 +19,17 @@ namespace ArkanoidGame
 	const unsigned int BALL_SIZE = 20;
 	const unsigned int BALL_SPEED = 400;
 
-	//блок
-	const unsigned int BLOCK_WIDTH = 70;
+	
 	const unsigned int BLOCK_HEIGHT = 25;
+	
+	// блоки
+	const unsigned int BLOCKS_COUNT_ROWS = 4;
+	const unsigned int BLOCKS_COUNT_IN_ROW = 10;
+	const unsigned int BLOCK_SHIFT = 5;
+	const unsigned int BLOCK_WIDTH = (SCREEN_WIDTH - (BLOCKS_COUNT_IN_ROW + 1) * BLOCK_SHIFT) / BLOCKS_COUNT_IN_ROW;
+
+
+	const float BREAK_DELAY = 1.f;
 
 	// платформа
 	const unsigned int PLATFORM_WIDTH = 160;

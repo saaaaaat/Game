@@ -6,9 +6,9 @@ namespace ArkanoidGame
 	class GameObject
 	{
 	public:
+		GameObject(const std::string& texturePath, const sf::Vector2f& position, float width, float height);
 		virtual ~GameObject() = default;
 
-		virtual void Init() = 0;
 		virtual void Update(float timeDelta) = 0;
 		virtual void Draw(sf::RenderWindow& window);
 

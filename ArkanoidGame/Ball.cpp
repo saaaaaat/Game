@@ -1,7 +1,7 @@
 #include "Ball.h"
 #include "GameSettings.h"
 #include "Sprite.h"
-#include <cassert>
+#include "randomizer.h"
 #include <cmath>
 
 namespace
@@ -11,39 +11,60 @@ namespace
 
 namespace ArkanoidGame
 {
-	void Ball::Init()
+	//создание шарика и задать направление
+	Ball::Ball(const sf::Vector2f& position)
+		: GameObject(TEXTURES_PATH + TEXTURE_ID + ".png", position, BALL_SIZE, BALL_SIZE)
 	{
-		assert(texture.loadFromFile(TEXTURES_PATH + TEXTURE_ID + ".png"));
-
-		SetupSprite(sprite, BALL_SIZE, BALL_SIZE, texture);
-		sprite.setPosition({ SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT - PLATFORM_HEIGHT - BALL_SIZE / 2.0f });
-
-		float angle = 45.f + rand() % 90;
-		float pi = std::acos(-1.f);
+		const float angle = 90.f;
+		const auto pi = std::acos(-1.f);
 		direction.x = std::cos(pi / 180.f * angle);
 		direction.y = std::sin(pi / 180.f * angle);
 	}
-
+	//обновление позиции и отскоки 
 	void Ball::Update(float timeDelta)
 	{
-		sf::Vector2f pos = sprite.getPosition() + BALL_SPEED * timeDelta * direction;
+		const auto pos = sprite.getPosition() + BALL_SPEED * timeDelta * direction;
 		sprite.setPosition(pos);
 
-		// отскок от боковых стен
 		if (pos.x - BALL_SIZE / 2.f <= 0 || pos.x + BALL_SIZE / 2.f >= SCREEN_WIDTH)
 		{
 			direction.x *= -1;
 		}
 
-		// отскок от верха и низа
 		if (pos.y - BALL_SIZE / 2.f <= 0 || pos.y + BALL_SIZE / 2.f >= SCREEN_HEIGHT)
 		{
 			direction.y *= -1;
 		}
 	}
 
-	void Ball::ReboundFromPlatform()
+	void Ball::InvertDirectionX()
+	{
+		direction.x *= -1;
+	}
+
+	void Ball::InvertDirectionY()
 	{
 		direction.y *= -1;
+	}
+
+	bool Ball::GetCollision(std::shared_ptr<Colladiable> collidable) const
+	{
+		auto gameObject = std::dynamic_pointer_cast<GameObject>(collidable);
+		if (!gameObject) return false;
+		return GetRect().intersects(gameObject->GetRect());
+	}
+
+	void Ball::OnHit()
+	{
+		lastAngle += random<float>(-5.f, 5.f);
+		ChangeAngle(lastAngle);
+	}
+
+	void Ball::ChangeAngle(float angle)
+	{
+		lastAngle = angle;
+		const auto pi = std::acos(-1.f);
+		direction.x = (angle / std::fabs(angle)) * std::cos(pi / 180.f * angle);
+		direction.y = -1.f * std::fabs(std::sin(pi / 180.f * angle));
 	}
 }

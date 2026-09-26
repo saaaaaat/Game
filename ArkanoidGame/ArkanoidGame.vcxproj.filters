@@ -61,6 +61,12 @@
     <ClCompile Include="GameStateWin.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="DurableBlock.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="GlassBlock.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -98,5 +104,14 @@
     <ClInclude Include="GameStateData.h" />
     <ClInclude Include="Block.h" />
     <ClInclude Include="GameStateWin.h" />
+    <ClInclude Include="Collidable.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="IDelayedAction.h" />
+    <ClInclude Include="randomizer.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="DurableBlock.h" />
+    <ClInclude Include="GlassBlock.h" />
   </ItemGroup>
 </Project>

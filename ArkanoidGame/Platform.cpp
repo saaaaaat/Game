@@ -2,7 +2,8 @@
 #include "Ball.h"
 #include "GameSettings.h"
 #include "Sprite.h"
-#include <cassert>
+#include <algorithm>
+
 
 namespace
 {
@@ -11,13 +12,12 @@ namespace
 
 namespace ArkanoidGame
 {
-	void Platform::Init()
+	Platform::Platform(const sf::Vector2f& position)
+		: GameObject(TEXTURES_PATH + TEXTURE_ID + ".png", position, PLATFORM_WIDTH, PLATFORM_HEIGHT)
 	{
-		assert(texture.loadFromFile(TEXTURES_PATH + TEXTURE_ID + ".png"));
-		SetupSprite(sprite, PLATFORM_WIDTH, PLATFORM_HEIGHT, texture);
-		sprite.setPosition({ SCREEN_WIDTH / 2.0f, SCREEN_HEIGHT - PLATFORM_HEIGHT / 2.0f });
 	}
 
+	// управление платформой
 	void Platform::Update(float timeDelta)
 	{
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
@@ -30,42 +30,51 @@ namespace ArkanoidGame
 		}
 	}
 
-	void Platform::Move(float step)
+	void Platform::Move(float speed)
 	{
-		sf::Vector2f position = sprite.getPosition();
-		position.x += step;
-
-		float leftLimit = PLATFORM_WIDTH / 2.f;
-		float rightLimit = SCREEN_WIDTH - PLATFORM_WIDTH / 2.f;
-
-		if (position.x < leftLimit) position.x = leftLimit;
-		if (position.x > rightLimit) position.x = rightLimit;
-
+		auto position = sprite.getPosition();
+		position.x = std::clamp(position.x + speed, PLATFORM_WIDTH / 2.f, SCREEN_WIDTH - PLATFORM_WIDTH / 2.f);
 		sprite.setPosition(position);
 	}
-	bool Platform::CheckCollisionWithBall(const Ball& ball) const
-	{
-		const sf::FloatRect& rect = sprite.getGlobalBounds();
-		const sf::Vector2f& ballPos = ball.GetPosition();
-		const float halfBall = BALL_SIZE / 2.f;
 
-		// шар слева
+	// проверка касания шарика с платформой
+	bool Platform::GetCollision(std::shared_ptr<Colladiable> collidable) const
+	{
+		auto ball = std::dynamic_pointer_cast<Ball>(collidable);
+		if (!ball) return false;
+
+		auto sqr = [](float x) { return x * x; };
+
+		const auto rect = sprite.getGlobalBounds();
+		const auto ballPos = ball->GetPosition();
+		// шарик слева
+
 		if (ballPos.x < rect.left)
 		{
-			float dx = ballPos.x - rect.left;
-			float dy = ballPos.y - rect.top;
-			return (dx * dx + dy * dy) < halfBall * halfBall;
+			return sqr(ballPos.x - rect.left) + sqr(ballPos.y - rect.top) < sqr(BALL_SIZE / 2.0);
 		}
+		//шарик справа
 
-		// шар справа
 		if (ballPos.x > rect.left + rect.width)
 		{
-			float dx = ballPos.x - (rect.left + rect.width);
-			float dy = ballPos.y - rect.top;
-			return (dx * dx + dy * dy) < halfBall * halfBall;
+			return sqr(ballPos.x - rect.left - rect.width) + sqr(ballPos.y - rect.top) < sqr(BALL_SIZE / 2.0);
 		}
+		// шарик над
+		return std::fabs(ballPos.y - rect.top) <= BALL_SIZE / 2.0;
+	}
 
-		// над или под платформой
-		return std::fabs(ballPos.y - rect.top) <= halfBall;
+	bool Platform::CheckCollision(std::shared_ptr<Colladiable> collidable)
+	{
+		auto ball = std::dynamic_pointer_cast<Ball>(collidable);
+		if (!ball) return false;
+
+		if (GetCollision(ball))
+		{
+			auto rect = GetRect();
+			auto ballPosInPlatform = (ball->GetPosition().x - (rect.left + rect.width / 2)) / (rect.width / 2);
+			ball->ChangeAngle(90 - 20 * ballPosInPlatform);
+			return true;
+		}
+		return false;
 	}
 }

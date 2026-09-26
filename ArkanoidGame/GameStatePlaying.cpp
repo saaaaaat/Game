@@ -1,14 +1,19 @@
 #include "GameStatePlaying.h"
 #include "Application.h"
+#include "Block.h"
 #include "Game.h"
+#include"DurableBlock.h"
 #include "Text.h"
 #include <cassert>
-#include <cmath>
+#include <algorithm>
+#include "GlassBlock.h"
 
 namespace ArkanoidGame
 {
+	// ин. игрового состояния
 	void GameStatePlayingData::Init()
 	{
+		// ресурсы
 		assert(font.loadFromFile(FONTS_PATH + "Roboto-Regular.ttf"));
 		assert(gameOverSoundBuffer.loadFromFile(SOUNDS_PATH + "Death.wav"));
 
@@ -21,36 +26,13 @@ namespace ArkanoidGame
 		scoreText.setFillColor(sf::Color::Yellow);
 
 		// платформа и шарик
-		gameObjects.emplace_back(std::make_shared<Platform>());
-		gameObjects.emplace_back(std::make_shared<Ball>());
+		gameObjects.emplace_back(std::make_shared<Platform>(
+			sf::Vector2f(SCREEN_WIDTH / 2.f, SCREEN_HEIGHT - PLATFORM_HEIGHT / 2.f)));
 
-		// блок
-		const int rows = 5;
-		const int columns = 10;
-		const float startX = 60.f;
-		const float startY = 60.f;
-		const float spacingX = 72.f;
-		const float spacingY = 30.f;
+		gameObjects.emplace_back(std::make_shared<Ball>(
+			sf::Vector2f(SCREEN_WIDTH / 2.f, SCREEN_HEIGHT - PLATFORM_HEIGHT - BALL_SIZE / 2.f)));
 
-		for (int row = 0; row < rows; ++row)
-		{
-			for (int col = 0; col < columns; ++col)
-			{
-				auto block = std::make_shared<Block>();
-				block->Init();
-				block->SetPosition(
-					startX + col * spacingX,
-					startY + row * spacingY
-				);
-				blocks.push_back(block);
-			}
-		}
-
-		// ин. объектов
-		for (auto& object : gameObjects)
-		{
-			object->Init();
-		}
+		createBlocks();
 
 		gameOverSound.setBuffer(gameOverSoundBuffer);
 	}
@@ -68,83 +50,53 @@ namespace ArkanoidGame
 
 	void GameStatePlayingData::Update(float timeDelta)
 	{
-		// обновление для обьектов
-		for (auto& object : gameObjects)
-		{
-			object->Update(timeDelta);
-		}
+		// обновление обьектов
+		for (auto& obj : gameObjects) obj->Update(timeDelta);
+		for (auto& block : blocks) block->Update(timeDelta);
 
-		// обновление блоков
-		for (auto& block : blocks)
-		{
-			block->Update(timeDelta);
-		}
+		std::shared_ptr<Platform> platform = std::dynamic_pointer_cast<Platform>(gameObjects[0]);
+		std::shared_ptr<Ball> ball = std::dynamic_pointer_cast<Ball>(gameObjects[1]);
 
-		const Platform* platform = (Platform*)gameObjects[0].get();
-		Ball* ball = (Ball*)gameObjects[1].get();
+		auto isCollision = platform->CheckCollision(ball);
 
-		// столкновение  платформой
-		bool hit = platform->CheckCollisionWithBall(*ball);
-		if (hit && ball->GetDirection().y > 0)
-		{
-			ball->ReboundFromPlatform();
-		}
+		bool needInverseDirX = false;
+		bool needInverseDirY = false;
+		bool hasBrokeOneBlock = false;
 
-		// столкновение с блоком
-		for (auto& block : blocks)
-		{
-			if (block->IsDestroyed())
-			{
-				continue;
-			}
-
-			if (ball->GetRect().intersects(block->GetRect()))
-			{
-				sf::Vector2f ballPos = ball->GetPosition();
-				sf::Vector2f blockPos = block->GetPosition();
-
-				float dx = ballPos.x - blockPos.x;
-				float dy = ballPos.y - blockPos.y;
-
-				if (std::fabs(dx) > std::fabs(dy))
+		
+		blocks.erase(
+			std::remove_if(blocks.begin(), blocks.end(),
+				[ball, &hasBrokeOneBlock, &needInverseDirX, &needInverseDirY, this](auto block)
 				{
-					ball->ReboundHorizontally();
-				}
-				else
-				{
-					ball->ReboundVertically();
-				}
+					if ((!hasBrokeOneBlock) && block->CheckCollision(ball))
+					{
+						hasBrokeOneBlock = true;
+						if (!block->IsTransparent())
+						{
+							const auto ballPos = ball->GetPosition();
+							const auto blockRect = block->GetRect();
+							GetBallInverse(ballPos, blockRect, needInverseDirX, needInverseDirY);
+						}
+					}
+					return block->IsBroken();
+				}),
+			blocks.end());
 
-				block->Destroy();
+		if (needInverseDirX) ball->InvertDirectionX();
+		if (needInverseDirY) ball->InvertDirectionY();
 
-				break;
-			}
-		}
+		const bool isGameWin = blocks.size() == 0;
+		const bool isGameOver = !isCollision && ball->GetPosition().y > platform->GetRect().top;
+		Game& game = Application::Instance().GetGame();
 
-		// проверка на уничтожение
-		bool allBlocksDestroyed = true;
-		for (auto& block : blocks)
+		if (isGameWin)
 		{
-			if (!block->IsDestroyed())
-			{
-				allBlocksDestroyed = false;
-				break;
-			}
+			game.PushState(GameStateType::GameWin, false);
 		}
-
-		if (allBlocksDestroyed)
-		{
-			Application::Instance().GetGame().PushState(GameStateType::Win, false);
-			return;   
-		}
-
-		// проигрыш
-		bool gameOver = !hit && ball->GetPosition().y > platform->GetRect().top;
-
-		if (gameOver)
+		else if (isGameOver)
 		{
 			gameOverSound.play();
-			Application::Instance().GetGame().PushState(GameStateType::GameOver, false);
+			game.PushState(GameStateType::GameOver, false);
 		}
 	}
 
@@ -152,20 +104,70 @@ namespace ArkanoidGame
 	{
 		window.draw(background);
 
-		
-		for (auto& object : gameObjects)
-		{
-			object->Draw(window);
-		}
-
-		//блоки
-		for (auto& block : blocks)
-		{
-			block->Draw(window);
-		}
+		for (auto& obj : gameObjects) obj->Draw(window);
+		for (auto& block : blocks) block->Draw(window);
 
 		scoreText.setOrigin(CalculateTextOrigin(scoreText, { 0.f, 0.f }));
 		scoreText.setPosition(10.f, 10.f);
 		window.draw(scoreText);
+	}
+
+	void GameStatePlayingData::createBlocks()
+	{
+		int row = 0;
+		for (; row < BLOCKS_COUNT_ROWS; ++row)
+		{
+			// обычные
+			for (int col = 0; col < BLOCKS_COUNT_IN_ROW; ++col)
+			{
+				blocks.emplace_back(std::make_shared<SmoothDestroyableBlock>(
+					sf::Vector2f(
+						BLOCK_SHIFT + BLOCK_WIDTH / 2.f + col * (BLOCK_WIDTH + BLOCK_SHIFT),
+						100.f + row * (BLOCK_HEIGHT + BLOCK_SHIFT))));
+			}
+		}
+		//из 3 ударов
+		for (int col = 0; col < BLOCKS_COUNT_IN_ROW; ++col)
+		{
+			blocks.emplace_back(std::make_shared<DurableBlock>(
+				sf::Vector2f(
+					BLOCK_SHIFT + BLOCK_WIDTH / 2.f + col * (BLOCK_WIDTH + BLOCK_SHIFT),
+					100.f + row * (BLOCK_HEIGHT + BLOCK_SHIFT))));
+		}
+		++row;
+		 // стеклянные
+		for (int col = 0; col < BLOCKS_COUNT_IN_ROW; ++col)
+		{
+			blocks.emplace_back(std::make_shared<GlassBlock>(
+				sf::Vector2f(
+					BLOCK_SHIFT + BLOCK_WIDTH / 2.f + col * (BLOCK_WIDTH + BLOCK_SHIFT),
+					100.f + row * (BLOCK_HEIGHT + BLOCK_SHIFT))));
+		}
+		++row;
+		// неразрушимые
+		for (int col = 0; col < 3; ++col)
+		{
+			blocks.emplace_back(std::make_shared<UnbreackableBlock>(
+				sf::Vector2f(
+					BLOCK_SHIFT + BLOCK_WIDTH / 2.f + col * (BLOCK_WIDTH + BLOCK_SHIFT),
+					100.f + row * (BLOCK_HEIGHT + BLOCK_SHIFT))));
+		}
+	}
+
+	void GameStatePlayingData::GetBallInverse(const sf::Vector2f& ballPos, const sf::FloatRect& blockRect,
+		bool& needInverseDirX, bool& needInverseDirY)
+	{
+		if (ballPos.y > blockRect.top + blockRect.height)
+		{
+			needInverseDirY = true;
+		}
+		if (ballPos.x < blockRect.left)
+		{
+			needInverseDirX = true;
+		}
+		if (ballPos.x > blockRect.left + blockRect.width)
+		{
+			needInverseDirX = true;
+		}
 	}
 }

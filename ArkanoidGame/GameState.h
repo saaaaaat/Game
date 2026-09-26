@@ -11,6 +11,7 @@ namespace ArkanoidGame
 		MainMenu,
 		Playing,
 		GameOver,
+		GameWin,
 		ExitDialog,
 		Records,
 		Win,

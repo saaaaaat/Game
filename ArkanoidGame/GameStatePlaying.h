@@ -2,16 +2,13 @@
 #include "SFML/Graphics.hpp"
 #include "SFML/Audio.hpp"
 #include "GameStateData.h"
-#include "GameObject.h"
 #include "Platform.h"
 #include "Ball.h"
-#include "Block.h"
-#include <vector>
-#include <memory>
 
 namespace ArkanoidGame
 {
 	class Game;
+	class Block;
 
 	class GameStatePlayingData : public GameStateData
 	{
@@ -22,6 +19,10 @@ namespace ArkanoidGame
 		void Draw(sf::RenderWindow& window) override;
 
 	private:
+		void createBlocks();
+		void GetBallInverse(const sf::Vector2f& ballPos, const sf::FloatRect& blockRect,
+			bool& needInverseDirX, bool& needInverseDirY);
+
 		sf::Font font;
 		sf::SoundBuffer gameOverSoundBuffer;
 
