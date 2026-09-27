@@ -85,7 +85,17 @@ namespace ArkanoidGame
 		if (needInverseDirX) ball->InvertDirectionX();
 		if (needInverseDirY) ball->InvertDirectionY();
 
-		const bool isGameWin = blocks.size() == 0;
+		bool hasDestructibleBlocks = false;
+		for (auto& block : blocks)
+		{
+			if (!block->IsUnbreakable())
+			{
+				hasDestructibleBlocks = true;
+				break;
+			}
+		}
+
+		const bool isGameWin = !hasDestructibleBlocks;
 		const bool isGameOver = !isCollision && ball->GetPosition().y > platform->GetRect().top;
 		Game& game = Application::Instance().GetGame();
 

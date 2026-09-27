@@ -20,6 +20,7 @@ namespace ArkanoidGame
 		void Update(float timeDelta) override;
 		bool IsBroken();
 		virtual bool IsTransparent() const { return false; }
+		virtual bool IsUnbreakable() const { return false; }
 	};
 
 	class SmoothDestroyableBlock : public Block, public IDelayedAction
@@ -45,5 +46,6 @@ namespace ArkanoidGame
 		UnbreackableBlock(const sf::Vector2f& position);
 		void OnHit() override;
 		void Update(float) override {}
+		bool IsUnbreakable() const override { return true; }
 	};
 }

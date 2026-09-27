@@ -11,4 +11,17 @@ namespace ArkanoidGame
 	{
 		hitCount = 0;   // ломается сразу
 	}
+
+	bool GlassBlock::CheckCollision(std::shared_ptr<Colladiable> collidable)
+	{
+		if (GetCollision(collidable))
+		{
+			OnHit();   // только блок ломается
+
+			// НЕ вызываем collidable->OnHit() — шарик не меняет угол
+
+			return true;
+		}
+		return false;
+	}
 }
