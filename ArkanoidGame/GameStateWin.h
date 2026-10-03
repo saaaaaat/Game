@@ -17,9 +17,11 @@ namespace ArkanoidGame
 
 	private:
 		sf::Font font;
+		std::vector<sf::Text> recordsTableTexts;
 		sf::RectangleShape background;
 		sf::Text winText;
 		sf::Text hintText;
+		sf::Text scoreText;
 		Menu menu;
 	};
 }

@@ -67,6 +67,24 @@
     <ClCompile Include="GlassBlock.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="LevelLoader.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="BlockFactory.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Bonus.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="FireBallBonus.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="SlowBallBonus.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="BigPlatformBonus.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -113,5 +131,24 @@
     </ClInclude>
     <ClInclude Include="DurableBlock.h" />
     <ClInclude Include="GlassBlock.h" />
+    <ClInclude Include="LevelLoader.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockFactory.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="IObserver.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="Bonus.h" />
+    <ClInclude Include="FireBallBonus.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="SlowBallBonus.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
+    <ClInclude Include="BigPlatformBonus.h">
+      <Filter>Sources</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

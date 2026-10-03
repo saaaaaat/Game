@@ -8,32 +8,38 @@ namespace ArkanoidGame
 {
 	void GameStateWinData::Init()
 	{
-		assert(font.loadFromFile(RESOURCES_PATH + "Fonts/Roboto-Regular.ttf"));
+		assert(font.loadFromFile(SETTINGS.RESOURCES_PATH + "Fonts/Roboto-Regular.ttf"));
 
 		sf::Color bg = sf::Color::Black;
 		bg.a = 200;
 		background.setFillColor(bg);
 
-		// победа
+		// Победа
 		winText.setFont(font);
 		winText.setCharacterSize(48);
 		winText.setStyle(sf::Text::Bold);
 		winText.setFillColor(sf::Color::Green);
 		winText.setString("YOU WIN");
 
-		
+		int playerScore = Application::Instance().GetGame().GetRecordByPlayerId(SETTINGS.PLAYER_NAME);
+		scoreText.setFont(font);
+		scoreText.setCharacterSize(32);
+		scoreText.setFillColor(sf::Color::Yellow);
+		scoreText.setString("Your score: " + std::to_string(playerScore));
+
+		// Подсказка
 		hintText.setFont(font);
 		hintText.setCharacterSize(24);
 		hintText.setFillColor(sf::Color::White);
 		hintText.setString("Play again?");
 
-	
+		// Меню Да/Нет
 		MenuItem yesItem;
 		yesItem.text.setString("Yes");
 		yesItem.text.setFont(font);
 		yesItem.text.setCharacterSize(24);
 		yesItem.onPressCallback = [](MenuItem&) {
-			Application::Instance().GetGame().SwitchStateTo(GameStateType::Playing);
+			Application::Instance().GetGame().StartGame();
 			};
 
 		MenuItem noItem;
@@ -41,7 +47,7 @@ namespace ArkanoidGame
 		noItem.text.setFont(font);
 		noItem.text.setCharacterSize(24);
 		noItem.onPressCallback = [](MenuItem&) {
-			Application::Instance().GetGame().SwitchStateTo(GameStateType::MainMenu);
+			Application::Instance().GetGame().ExitGame();
 			};
 
 		MenuItem winMenu;
@@ -51,7 +57,7 @@ namespace ArkanoidGame
 		winMenu.childrens.push_back(yesItem);
 		winMenu.childrens.push_back(noItem);
 
-		menu.Init(winMenu);
+		menu.Init(winMenu);  
 	}
 
 	void GameStateWinData::HandleWindowEvent(const sf::Event& event)
@@ -60,19 +66,19 @@ namespace ArkanoidGame
 		{
 			if (event.key.code == sf::Keyboard::Enter)
 			{
-				menu.ActivateSelectedItem();
+				menu.ActivateSelectedItem();   
 			}
 
-			Orientation orientation = menu.GetActiveMenu().childrenOrientation;
+			Orientation orientation = menu.GetActiveMenu().childrenOrientation;  
 			if (orientation == Orientation::Vertical && event.key.code == sf::Keyboard::Up ||
 				orientation == Orientation::Horizontal && event.key.code == sf::Keyboard::Left)
 			{
-				menu.SelectPreviousItem();
+				menu.SelectPreviousItem();   
 			}
 			else if (orientation == Orientation::Vertical && event.key.code == sf::Keyboard::Down ||
 				orientation == Orientation::Horizontal && event.key.code == sf::Keyboard::Right)
 			{
-				menu.SelectNextItem();
+				menu.SelectNextItem();   
 			}
 		}
 	}
@@ -90,11 +96,15 @@ namespace ArkanoidGame
 		background.setSize(viewSize);
 		window.draw(background);
 
-		winText.setOrigin(CalculateTextOrigin(winText, { 0.5f, 0.5f }));
-		winText.setPosition(viewSize.x / 2.f, viewSize.y / 2.f - 100.f);
+		winText.setOrigin(CalculateTextOrigin(winText, { 0.5f, 0.5f }));   
+		winText.setPosition(viewSize.x / 2.f, viewSize.y / 2.f - 150.f);
 		window.draw(winText);
 
-		hintText.setOrigin(CalculateTextOrigin(hintText, { 0.5f, 0.5f }));
+		scoreText.setOrigin(CalculateTextOrigin(scoreText, { 0.5f, 0.5f }));
+		scoreText.setPosition(viewSize.x / 2.f, viewSize.y / 2.f - 70.f);
+		window.draw(scoreText);
+
+		hintText.setOrigin(CalculateTextOrigin(hintText, { 0.5f, 0.5f }));  
 		hintText.setPosition(viewSize.x / 2.f, viewSize.y / 2.f - 20.f);
 		window.draw(hintText);
 

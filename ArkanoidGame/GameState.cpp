@@ -17,19 +17,22 @@ namespace ArkanoidGame
 		switch (type)
 		{
 		case GameStateType::MainMenu:
-			data = std::make_unique<GameStateMainMenuData>();
+			data = std::make_shared<GameStateMainMenuData>();
 			break;
 		case GameStateType::Playing:
-			data = std::make_unique<GameStatePlayingData>();
+			data = std::make_shared<GameStatePlayingData>();
 			break;
 		case GameStateType::GameOver:
-			data = std::make_unique<GameStateGameOverData>();
+			data = std::make_shared<GameStateGameOverData>();
 			break;
 		case GameStateType::GameWin:
-			data = std::make_unique<GameStateWinData>();
+			data = std::make_shared<GameStateWinData>();
+			break;
+		case GameStateType::Records:     
+			data = std::make_shared<GameStateRecordsData>();
 			break;
 		case GameStateType::ExitDialog:
-			data = std::make_unique<GameStatePauseMenuData>();
+			data = std::make_shared<GameStatePauseMenuData>();
 			break;
 		default:
 			assert(false);
@@ -44,19 +47,13 @@ namespace ArkanoidGame
 
 	GameState::~GameState()
 	{
+		if (data) {
+			data = nullptr;
+		}
 		
 	}
 
-	GameState& GameState::operator=(GameState&& state) noexcept
-	{
-		if (this == &state) return *this;
-
-		type = state.type;
-		data = std::move(state.data);
-		isExclusivelyVisible = state.isExclusivelyVisible;
-
-		return *this;
-	}
+	
 
 	void GameState::Update(float timeDelta)
 	{

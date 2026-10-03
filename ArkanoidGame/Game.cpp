@@ -5,21 +5,21 @@
 #include "GameStateGameOver.h"
 #include "GameStatePauseMenu.h"
 #include "GameStateMainMenu.h"
-//#include "GameStateRecords.h"
+#include "GameStateRecords.h"
 
 namespace ArkanoidGame
 {
 	Game::Game()
 	{
-		//иниц. таблици рекордов в конструкторе 
-		//recordsTable =
-		//{
-			//{"John", MAX_APPLES / 2},
-			//{"Jane", MAX_APPLES / 3},
-			//{"Alice", MAX_APPLES / 4},
-			//{"Bob", MAX_APPLES / 5},
-			//{"Clementine", MAX_APPLES / 5},
-		//};
+
+		recordsTable =
+		{
+			{"John", SETTINGS.MAX_APPLES / 2},
+			{"Jane", SETTINGS.MAX_APPLES / 3},
+			{"Alice", SETTINGS.MAX_APPLES / 4},
+			{"Bob", SETTINGS.MAX_APPLES / 5},
+			{SETTINGS.PLAYER_NAME,0},
+		};
 		//иниц.состояния
 
 		stateChangeType = GameStateChangeType::None;
@@ -43,7 +43,7 @@ namespace ArkanoidGame
 				window.close();
 			}
 
-			
+
 
 			if (!stateStack.empty())
 			{
@@ -149,14 +149,71 @@ namespace ArkanoidGame
 		}
 	}
 
-	//int Game::GetRecordByPlayerId(const std::string& playerId) const
-	//{
-		//auto it = recordsTable.find(playerId);
-		//return it == recordsTable.end() ? 0 : it->second;
-	//}
+	void Game::StartGame()
+	{
+		SwitchStateTo(GameStateType::Playing);
+	}
 
-	//void Game::UpdateRecord(const std::string& playerId, int score)
-	//{
-		//recordsTable[playerId] = std::max(recordsTable[playerId], score);
-	//}
+	void Game::PauseGame()
+	{
+		PushState(GameStateType::ExitDialog, false);
+	}
+
+	void Game::WinGame()
+	{
+		PushState(GameStateType::GameWin, false);
+	}
+
+	void Game::LooseGame()
+	{
+		PushState(GameStateType::GameOver, false);
+	}
+
+	void Game::ExitGame()
+	{
+		SwitchStateTo(GameStateType::MainMenu);
+	}
+
+	void Game::QuitGame()
+	{
+		SwitchStateTo(GameStateType::None);
+	}
+
+	void Game::ShowRecords()
+	{
+		PushState(GameStateType::Records, true);
+	}
+
+	void Game::LoadNextLevel()
+	{
+		assert(stateStack.back().GetType() == GameStateType::Playing);
+		auto playingData = stateStack.back().GetData<GameStatePlayingData>();
+		playingData->LoadNextLevel();
+	}
+	void Game::UpdateGame(float timeDelta, sf::RenderWindow& window)
+	{
+		HandleWindowEvents(window);
+		if (Update(timeDelta))
+		{
+			window.clear();
+			Draw(window);
+			window.display();
+		}
+		else
+		{
+			window.close();
+		}
+	}
+
+	int Game::GetRecordByPlayerId(const std::string & playerId) const
+	{
+		auto it = recordsTable.find(playerId);
+		return it == recordsTable.end() ? 0 : it->second;
+	}
+
+	void Game::UpdateRecord(const std::string & playerId, int score)
+	{
+		recordsTable[playerId] = std::max(recordsTable[playerId], score);
+	}
 }
+

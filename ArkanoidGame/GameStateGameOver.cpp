@@ -13,7 +13,7 @@ namespace ArkanoidGame
 
 	void GameStateGameOverData::Init()
 	{
-		assert(font.loadFromFile(RESOURCES_PATH + "Fonts/Roboto-Regular.ttf"));
+		assert(font.loadFromFile(SETTINGS.RESOURCES_PATH + "Fonts/Roboto-Regular.ttf"));
 
 		timeSinceGameOver = 0.f;
 
@@ -27,19 +27,21 @@ namespace ArkanoidGame
 		gameOverText.setFillColor(sf::Color::Red);
 		gameOverText.setString("GAME OVER");
 
-		// собираем  вектор ,сортируем
-		//std::vector<std::pair<int, std::string>> sorted;
-		//Game& game = Application::Instance().GetGame();
-		//for (const auto& item : game.GetRecordsTable())
-		//{
-			//sorted.push_back({ item.second, item.first });
-		//}
+		recordsTableTexts.reserve(SETTINGS.MAX_RECORDS_TABLE_SIZE);
 
-		//std::sort(sorted.begin(), sorted.end(),
-			/*[](const auto& a, const auto& b) { return a.first > b.first; });
+		 //собираем  вектор ,сортируем
+		std::vector<std::pair<int, std::string>> sorted;
+		Game& game = Application::Instance().GetGame();
+		for (const auto& item : game.GetRecordsTable())
+		{
+			sorted.push_back({ item.second, item.first });
+		}
+
+		std::sort(sorted.begin(), sorted.end(),
+			[](const auto& a, const auto& b) { return a.first > b.first; });
 
 		bool playerFound = false;
-		for (int i = 0; i < MAX_RECORDS_TABLE_SIZE && i < (int)sorted.size(); ++i)
+		for (int i = 0; i < SETTINGS.MAX_RECORDS_TABLE_SIZE && i < (int)sorted.size(); ++i)
 		{
 			recordsTableTexts.emplace_back();
 			sf::Text& text = recordsTableTexts.back();
@@ -66,10 +68,10 @@ namespace ArkanoidGame
 			sf::Text& last = recordsTableTexts.back();
 			std::stringstream ss;
 			int score = game.GetRecordByPlayerId(PLAYER_NAME);
-			ss << MAX_RECORDS_TABLE_SIZE << ". " << PLAYER_NAME << ": " << score;
+			ss << SETTINGS.MAX_RECORDS_TABLE_SIZE << ". " << PLAYER_NAME << ": " << score;
 			last.setString(ss.str());
 			last.setFillColor(sf::Color::Green);
-		}*/
+		}
 
 		hintText.setFont(font);
 		hintText.setCharacterSize(24);
@@ -109,14 +111,14 @@ namespace ArkanoidGame
 		gameOverText.setPosition(viewSize.x / 2.f, viewSize.y / 2 - 50.f);
 		window.draw(gameOverText);
 
-		/*std::vector<sf::Text*> textsList;
+		std::vector<sf::Text*> textsList;
 		for (auto& text : recordsTableTexts)
 		{
 			textsList.push_back(&text);
 		}
 
-		sf::Vector2f tablePos = { viewSize.x / 2, viewSize.y / 2.f };
-		DrawTextArray(window, textsList, 10.f, Orientation::Vertical, Alignment::Min, tablePos, { 0.5f, 0.f });*/
+		sf::Vector2f tablePos = { viewSize.x / 2, viewSize.y / 2.f +30.f };
+		DrawTextArray(window, textsList, 10.f, Orientation::Vertical, Alignment::Min, tablePos, { 0.5f, 0.f });
 
 		hintText.setOrigin(CalculateTextOrigin(hintText, { 0.5f, 1.f }));
 		hintText.setPosition(viewSize.x / 2.f, viewSize.y - 50.f);

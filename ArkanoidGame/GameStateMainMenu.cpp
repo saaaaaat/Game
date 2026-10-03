@@ -21,15 +21,15 @@ namespace ArkanoidGame
 
 	void GameStateMainMenuData::Init()
 	{
-		assert(font.loadFromFile(RESOURCES_PATH + "Fonts/Roboto-Regular.ttf"));
+		assert(font.loadFromFile(SETTINGS.RESOURCES_PATH + "Fonts/Roboto-Regular.ttf"));
 
 		MenuItem startGame = CreateMenuItem("Start Game", font, [](MenuItem&) {
 			Application::Instance().GetGame().SwitchStateTo(GameStateType::Playing);
 			});
 
-		//MenuItem records = CreateMenuItem("Records", font, [](MenuItem&) {
-			//Application::Instance().GetGame().PushState(GameStateType::Records, true);
-			//});
+		MenuItem records = CreateMenuItem("Records", font, [](MenuItem&) {
+			Application::Instance().GetGame().PushState(GameStateType::Records, true);
+			});
 
 		MenuItem yes = CreateMenuItem("Yes", font, [](MenuItem&) {
 			Application::Instance().GetGame().SwitchStateTo(GameStateType::None);
@@ -59,7 +59,7 @@ namespace ArkanoidGame
 		mainMenu.childrenAlignment = Alignment::Middle;
 		mainMenu.childrenSpacing = 10.f;
 		mainMenu.childrens.push_back(startGame);
-		//mainMenu.childrens.push_back(records);
+		mainMenu.childrens.push_back(records);
 		mainMenu.childrens.push_back(exitGame);
 
 		menu.Init(mainMenu);

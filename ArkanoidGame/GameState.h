@@ -14,7 +14,7 @@ namespace ArkanoidGame
 		GameWin,
 		ExitDialog,
 		Records,
-		Win,
+		
 	};
 
 	class GameState
@@ -30,20 +30,33 @@ namespace ArkanoidGame
 
 		GameState& operator=(const GameState& state) = delete;
 		// опретар перемещения с иницилизацией полей
-		GameState& operator=(GameState&& state) noexcept;
+		GameState& operator=(GameState&& state) noexcept
+		{
+			type = state.type;
+			data = std::move(state.data);
+			isExclusivelyVisible = state.isExclusivelyVisible;
+			state.data = nullptr;
+			return *this;
+		}
 	    GameStateType GetType() const { return type; }
 		bool IsExclusivelyVisible() const { return isExclusivelyVisible; }
+
+		template<class T>
+		T* GetData() const
+		{
+			return static_cast<T*>(data.get());
+		}
 
 		void Update(float timeDelta);
 		void Draw(sf::RenderWindow& window);
 		void HandleWindowEvent(const sf::Event& event);
 
 	private:
-		void DestroyData();
+		
 
 		//иниц. полей при обьявление
 		GameStateType type = GameStateType::None;
-		std::unique_ptr<GameStateData> data = nullptr;
+		std::shared_ptr<GameStateData> data = nullptr;
 		bool isExclusivelyVisible = false;
 	};
 }

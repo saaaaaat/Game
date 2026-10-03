@@ -11,14 +11,14 @@ namespace ArkanoidGame
 {
 	void GameStateRecordsData::Init()
 	{
-		assert(font.loadFromFile(RESOURCES_PATH + "Fonts/Roboto-Regular.ttf"));
+		assert(font.loadFromFile(SETTINGS.RESOURCES_PATH + "Fonts/Roboto-Regular.ttf"));
 
 		titleText.setString("RECORDS");
 		titleText.setFont(font);
 		titleText.setFillColor(sf::Color::Red);
 		titleText.setCharacterSize(48);
 
-		/*std::vector<std::pair<int, std::string>> sorted;
+		std::vector<std::pair<int, std::string>> sorted;
 		const Game& game = Application::Instance().GetGame();
 		for (const auto& item : game.GetRecordsTable())
 		{
@@ -28,7 +28,7 @@ namespace ArkanoidGame
 		std::sort(sorted.begin(), sorted.end(),
 			[](const auto& a, const auto& b) { return a.first > b.first; });
 
-		for (int i = 0; i < MAX_RECORDS_TABLE_SIZE && i < (int)sorted.size(); ++i)
+		for (int i = 0; i < SETTINGS.MAX_RECORDS_TABLE_SIZE && i < (int)sorted.size(); ++i)
 		{
 			tableTexts.emplace_back();
 			sf::Text& text = tableTexts.back();
@@ -39,7 +39,7 @@ namespace ArkanoidGame
 			text.setFont(font);
 			text.setFillColor(sf::Color::White);
 			text.setCharacterSize(24);
-		}*/
+		}
 
 		hintText.setString("Press ESC to return back to main menu");
 		hintText.setFont(font);
@@ -71,14 +71,14 @@ namespace ArkanoidGame
 		titleText.setPosition(viewSize.x / 2.f, 50.f);
 		window.draw(titleText);
 
-		/*std::vector<sf::Text*> textsList;
+		std::vector<sf::Text*> textsList;
 		for (auto& text : tableTexts)
 		{
 			textsList.push_back(&text);
 		}
 
 		sf::Vector2f tablePos = { titleText.getGlobalBounds().left, viewSize.y / 2.f };
-		DrawTextArray(window, textsList, 10.f, Orientation::Vertical, Alignment::Min, tablePos, { 0.f, 0.f });*/
+		DrawTextArray(window, textsList, 10.f, Orientation::Vertical, Alignment::Min, tablePos, { 0.f, 0.f });
 
 		hintText.setOrigin(CalculateTextOrigin(hintText, { 0.5f, 1.f }));
 		hintText.setPosition(viewSize.x / 2.f, viewSize.y - 50.f);

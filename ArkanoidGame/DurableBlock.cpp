@@ -23,7 +23,8 @@ namespace ArkanoidGame
 		}
 		else if (hitPoints <= 0)
 		{
-			hitCount = 0;   // разрушение
+			hitCount = 0; // разрушение
+			Emit();
 		}
 	}
 

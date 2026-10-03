@@ -3,10 +3,11 @@
 #include "GameObject.h"
 #include "Collidable.h"
 #include "IDelayedAction.h"
+#include "IObserver.h"
 
 namespace ArkanoidGame
 {
-	class Block : public GameObject, public Colladiable
+	class Block : public GameObject, public Colladiable , public IObservable
 	{
 	protected:
 		virtual void OnHit() override;
@@ -21,6 +22,7 @@ namespace ArkanoidGame
 		bool IsBroken();
 		virtual bool IsTransparent() const { return false; }
 		virtual bool IsUnbreakable() const { return false; }
+		virtual int GetPoints() const { return 1; }
 	};
 
 	class SmoothDestroyableBlock : public Block, public IDelayedAction
@@ -38,6 +40,7 @@ namespace ArkanoidGame
 		bool GetCollision(std::shared_ptr<Colladiable> collidableObject) const override;
 		void FinalAction() override;
 		void EachTickAction(float deltaTime) override;
+		
 	};
 
 	class UnbreackableBlock : public Block
@@ -47,5 +50,6 @@ namespace ArkanoidGame
 		void OnHit() override;
 		void Update(float) override {}
 		bool IsUnbreakable() const override { return true; }
+		int GetPoints() const override { return 0; }
 	};
 }

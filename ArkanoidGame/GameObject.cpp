@@ -1,10 +1,11 @@
 #include "GameObject.h"
 #include "Sprite.h"
-#include <assert.h>
+#include <cassert>
 
 namespace ArkanoidGame
 {
 	GameObject::GameObject(const std::string& texturePath, const sf::Vector2f& position, float width, float height)
+		: startPosition(position)   
 	{
 		assert(texture.loadFromFile(texturePath));
 
@@ -16,4 +17,11 @@ namespace ArkanoidGame
 	{
 		RenderSprite(sprite, window);
 	}
+
+
+	void GameObject::restart()
+	{
+		sprite.setPosition(startPosition);
+	}
+
 }

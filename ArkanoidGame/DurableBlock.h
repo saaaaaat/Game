@@ -10,6 +10,7 @@ namespace ArkanoidGame
 
 		void OnHit() override;
 		void Update(float timeDelta) override;
+		int GetPoints() const override { return 3; }
 
 	private:
 		int hitPoints = 3;

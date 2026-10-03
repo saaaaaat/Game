@@ -11,7 +11,7 @@ namespace ArkanoidGame
 	
 
 	Application::Application() :
-		window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), GAME_NAME)//иниц. в списке
+		window(sf::VideoMode(SETTINGS.SCREEN_WIDTH, SETTINGS.SCREEN_HEIGHT), SETTINGS.GAME_NAME)//иниц. в списке
 	{
 		unsigned int seed = (unsigned int)time(nullptr);
 		srand(seed);
@@ -28,7 +28,7 @@ namespace ArkanoidGame
 			game.HandleWindowEvents(window);
 			if (!window.isOpen()) break;
 
-			if (game.Update(TIME_PER_FRAME))
+			if (game.Update(SETTINGS.TIME_PER_FRAME))
 			{
 				window.clear();
 				game.Draw(window);
@@ -40,9 +40,9 @@ namespace ArkanoidGame
 			}
 
 			float spent = clock.getElapsedTime().asSeconds() - start;
-			if (spent < TIME_PER_FRAME)
+			if (spent < SETTINGS.TIME_PER_FRAME)
 			{
-				sf::sleep(sf::seconds(TIME_PER_FRAME - spent));
+				sf::sleep(sf::seconds(SETTINGS.TIME_PER_FRAME - spent));
 			}
 		}
 	}

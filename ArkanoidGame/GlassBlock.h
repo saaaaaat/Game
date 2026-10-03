@@ -11,5 +11,6 @@ namespace ArkanoidGame
 		void OnHit() override;
 		bool CheckCollision(std::shared_ptr<Colladiable> collidable) override;
 		bool IsTransparent() const override { return true; }
+		int GetPoints() const override { return 1; }
 	};
 }
